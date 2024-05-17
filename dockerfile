@@ -6,7 +6,7 @@ EXPOSE 3000
 
 COPY package.json package-lock.json ./
 
-RUN yarn install
+RUN yarn
 
 COPY . ./
 
