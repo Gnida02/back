@@ -47,7 +47,7 @@ app.patch('/services/:id/:category', ServiceCtrl.updateServiceByCategory);
 app.delete('/services/:id', ServiceCtrl.deleteService);
 
 
-app.listen(6666, function(err) {
+app.listen(3000, function(err) {
   if (err) {
     return console.log(err);
   }
