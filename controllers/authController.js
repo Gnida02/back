@@ -145,16 +145,16 @@ function authController() {}
         try {
             const userId = req.params.id;
             
-            // Удаляем все приемы, связанные с пользователем (пациентом)
+            // Удаляем все приемы, связанные с пользователем 
             await Appointment.deleteMany({ $or: [{ patient: userId }, { user: userId }] });
     
-            // Удаляем самого пользователя (пациента)
+            // Удаляем самого пользователя 
             await User.findByIdAndDelete(userId);
             
-            return res.json({ message: 'Пациент успешно удален вместе со связанными приемами' });
+            return res.json({ message: 'Пользователь успешно удален вместе со связанными пациентами и приемами' });
         } catch (error) {
             console.error(error);
-            return res.status(400).json({ message: 'Ошибка при удалении пользователя (пациента)' });
+            return res.status(400).json({ message: 'Ошибка при удалении пользователя' });
         }
     }
 
