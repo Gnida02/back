@@ -75,27 +75,30 @@ const remove = async function(req, res) {
   const id = req.params.id;
 
   try {
-    await Patient.findOne({ _id: id });
-  } catch (e) {
-    return res.status(404).json({
-      success: false,
-      message: 'PATIENT_NOT_FOUND'
-    });
-  }
-
-  Patient.deleteOne({ _id: id }, err => {
-    if (err) {
-      return res.status(500).json({
+    const patient = await Patient.findById(id);
+    if (!patient) {
+      return res.status(404).json({
         success: false,
-        message: err
+        message: 'PATIENT_NOT_FOUND'
       });
     }
 
+    // Delete the patient's appointments first
+    await Appointment.deleteMany({ patient: id });
+
+    // Delete the patient
+    await Patient.deleteOne({ _id: id });
+
     res.json({
-      status: 'succces',
-       message: 'Пациент удален'
+      success: true,
+      message: 'Пациент и его приемы удалены успешно'
     });
-  });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err
+    });
+  }
 };
 
 const show = async function(req, res) {
