@@ -93,7 +93,7 @@ const remove = async function(req, res) {
 
     res.json({
       status: 'succces',
-       message: 'Пациент и его приемы удалены'
+       message: 'Пациент удален'
     });
   });
 };
