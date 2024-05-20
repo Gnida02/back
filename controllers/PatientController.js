@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { Patient,User } = require('../models');
+const { Patient,User,Appointment } = require('../models');
 
 function PatientContoller() {}
 
