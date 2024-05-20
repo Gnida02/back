@@ -65,7 +65,8 @@ const update = async function(req, res) {
     }
 
     res.json({
-      success: true
+      success: true,
+      message: 'Пациент обновлен'
     });
   });
 };
