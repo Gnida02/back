@@ -1,4 +1,4 @@
-const { User, Role, Appointment } = require('../models');
+const { User, Role, Appointment,Patient } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator')
@@ -147,6 +147,10 @@ function authController() {}
             
             // Удаляем все приемы, связанные с пользователем (пациентом)
             await Appointment.deleteMany({ $or: [{ patient: userId }, { user: userId }] });
+		 
+	    if (user.patient) {
+              await Patient.findByIdAndDelete(user.patient);
+            }
     
             // Удаляем самого пользователя (пациента)
             await User.findByIdAndDelete(userId);
