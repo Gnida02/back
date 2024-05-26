@@ -141,23 +141,48 @@ function authController() {}
         }
     }*/
     
-    const deleteUser = async function (req, res) {
-        try {
-            const userId = req.params.id;
-            
-            // Удаляем все приемы, связанные с пользователем (пациентом)
-            await Appointment.deleteMany({ $or: [{ patient: userId }, { user: userId }] });
-    
-            // Удаляем самого пользователя (пациента)
-            await User.findByIdAndDelete(userId);
-            
-            return res.json({ message: 'Пациент успешно удален вместе со связанными приемами' });
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: 'Ошибка при удалении пользователя (пациента)' });
-        }
-    }
+      const deleteUser = async function (req, res) {
+    try {
+        const userId = req.params.id;
 
+        // Находим пользователя по userId
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+       // console.log(`Пользователь найден: ${user._id}`);
+
+        // Удаляем все приемы, связанные с пользователем (как врачом)
+        const deletedUserAppointments = await Appointment.deleteMany({ user: userId });
+       // console.log(`Удалено приемов, связанных с пользователем: ${deletedUserAppointments.deletedCount}`);
+
+        // Находим запись пациента, связанную с этим пользователем
+        const patient = await Patient.findOne({ user: userId });
+        if (patient) {
+            //console.log(`Пациент найден: ${patient._id}`);
+
+            // Удаляем все приемы, связанные с этим пациентом
+            const deletedPatientAppointments = await Appointment.deleteMany({ patient: patient._id });
+            //console.log(`Удалено приемов, связанных с пациентом: ${deletedPatientAppointments.deletedCount}`);
+
+            // Удаляем запись пациента
+            const deletedPatient = await Patient.findByIdAndDelete(patient._id);
+           // console.log(`Пациент удален: ${deletedPatient}`);
+        } else {
+            console.log('Пациент не найден');
+        }
+
+        // Удаляем самого пользователя
+        const deletedUser = await User.findByIdAndDelete(userId);
+       // console.log(`Пользователь удален: ${deletedUser}`);
+
+        return res.json({ message: 'Пользователь и и его пациенты и приемы удалены' });
+    } catch (error) {
+        console.error(error);
+        return res.status(400).json({ message: 'Ошибка при удалении пользователя и связанных данных' });
+    }
+}
     const changePassword = async function(req, res) {
         try {
             const { userId, oldPassword, newPassword } = req.body;
