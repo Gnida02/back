@@ -141,36 +141,20 @@ function authController() {}
         }
     }*/
     
-  const deleteUser = async function (req, res) {
+    const deleteUser = async function (req, res) {
         try {
             const userId = req.params.id;
             
-            // Находим пользователя по userId
-            const user = await User.findById(userId);
-            if (!user) {
-                return res.status(404).json({ message: 'Пользователь не найден' });
-            }
-            
-            // Находим запись пациента, связанную с этим пользователем
-            const patient = await Patient.findOne({ user: userId });
-            if (patient) {
-                // Удаляем все приемы, связанные с этим пациентом
-                await Appointment.deleteMany({ patient: patient._id });
-                
-                // Удаляем запись пациента
-                await Patient.findByIdAndDelete(patient._id);
-            }
+            // Удаляем все приемы, связанные с пользователем (пациентом)
+            await Appointment.deleteMany({ $or: [{ patient: userId }, { user: userId }] });
     
-            // Удаляем все приемы, где пользователь указан в качестве врача (или другой роли)
-            await Appointment.deleteMany({ user: userId });
-            
-            // Удаляем самого пользователя
+            // Удаляем самого пользователя (пациента)
             await User.findByIdAndDelete(userId);
             
-            return res.json({ message: 'Пользователь успешно удален вместе с связанными пациентом и приемами' });
+            return res.json({ message: 'Пациент успешно удален вместе со связанными приемами' });
         } catch (error) {
             console.error(error);
-            return res.status(400).json({ message: 'Ошибка при удалении пользователя и связанных данных' });
+            return res.status(400).json({ message: 'Ошибка при удалении пользователя (пациента)' });
         }
     }
 
