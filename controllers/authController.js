@@ -147,7 +147,10 @@ function authController() {}
             
             // Удаляем все приемы, связанные с пользователем (пациентом)
             await Appointment.deleteMany({ $or: [{ patient: userId }, { user: userId }] });
-		 
+	     
+	    if (user.patient) {
+              await Patient.findByIdAndDelete(user.patient);
+            }
     
             // Удаляем самого пользователя (пациента)
             await User.findByIdAndDelete(userId);
