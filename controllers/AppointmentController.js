@@ -100,7 +100,7 @@ const create = async function(req, res) {
         });
       }
 
-      if (patient && patient.phone) {
+     /* if (patient && patient.phone) {
         try {
           // Отправляем SMS уведомление о создании записи на прием
           const smsResponse = await axios.post('https://app.sms.by/api/v1/sendQuickSMS', {
@@ -117,7 +117,7 @@ const create = async function(req, res) {
         } catch (smsError) {
           console.error('Error sending SMS' );
         }
-      }
+      }*/
 
       res.status(201).json({
         success: true,
