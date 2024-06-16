@@ -104,7 +104,7 @@ const create = async function(req, res) {
         try {
           // Отправляем SMS уведомление о создании записи на прием
           const smsResponse = await axios.post('https://app.sms.by/api/v1/sendQuickSMS', {
-            token: 'ecd35c8b477c900f842f91b795d9723a', // Заменить на API ключ от sms.by
+            token: 'c7423879d130b72543adc8e3ac3e6113', // Заменить на API ключ от sms.by
             message: `Здравствуйте, ${patient.fullname}! Вы записаны в стоматологическую клинику ${data.date} на ${data.time}`,
             phone: patient.phone, 
           });
