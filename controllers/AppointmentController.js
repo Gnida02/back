@@ -88,12 +88,10 @@ const create = async function(req, res) {
   }
 
   try {
-    // Находим пациента, пользователя и услугу по их ID
     patient = await Patient.findOne({ _id: data.patient });
     user = await User.findOne({ _id: data.user });
     service = await Service.findOne({ _id: data.service });
 
-    // Создаем запись на прием
     Appointment.create(data, async function(err, doc) {
       if (err) {
         return res.status(500).json({
@@ -102,14 +100,13 @@ const create = async function(req, res) {
         });
       }
 
-      // Проверяем, что пациент найден и имеет номер телефона
-      /*if (patient && patient.phone) {
+      if (patient && patient.phone) {
         try {
           // Отправляем SMS уведомление о создании записи на прием
           const smsResponse = await axios.post('https://app.sms.by/api/v1/sendQuickSMS', {
             token: 'ecd35c8b477c900f842f91b795d9723a', // Заменить на API ключ от sms.by
-            message: `Здравствуйте, ${patient.fullname}! Вы записаны в стоматологическую клинику ${data.date} на ${data.time}`, // Сообщение для SMS
-            phone: patient.phone, // Номер телефона пациента
+            message: `Здравствуйте, ${patient.fullname}! Вы записаны в стоматологическую клинику ${data.date} на ${data.time}`,
+            phone: patient.phone, 
           });
 
           if (smsResponse.status === 200) {
@@ -120,7 +117,7 @@ const create = async function(req, res) {
         } catch (smsError) {
           console.error('Error sending SMS' );
         }
-      }*/
+      }
 
       res.status(201).json({
         success: true,
